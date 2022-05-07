@@ -104,7 +104,12 @@ article = "<div style='text-align: center;'> <a href='https://github.com/ZHKKKe/
 
 url = "https://huggingface.co/datasets/nateraw/background-remover-files/resolve/main/twitter_profile_pic.jpeg"
 image = Image.open(requests.get(url, stream=True).raw)
-image.save('twitter_profile_pic.jpeg')
+image.save('twitter_profile_pic.jpg')
+
+url = "https://upload.wikimedia.org/wikipedia/commons/8/8d/President_Barack_Obama.jpg"
+image = Image.open(requests.get(url, stream=True).raw)
+image.save('obama.jpg')
+
 interface = gr.Interface(
     fn=main,
     inputs=[
@@ -112,7 +117,7 @@ interface = gr.Interface(
         gr.inputs.Slider(minimum=0, maximum=250, default=100, step=5, label='Mask Cutoff Threshold'),
     ],
     outputs='image',
-    examples=[['twitter_profile_pic.jpeg', 120]],
+    examples=[['twitter_profile_pic.jpg', 120], ['obama.jpg', 155]],
     title=title,
     description=description,
     article=article,
