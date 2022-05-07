@@ -33,7 +33,7 @@ def get_scale_factor(im_h, im_w, ref_size=512):
 MODEL_PATH = hf_hub_download('nateraw/background-remover-files', 'modnet.onnx', repo_type='dataset')
 
 
-def main(image_path):
+def main(image_path, threshold):
 
     # read image
     im = cv2.imread(image_path)
@@ -85,9 +85,17 @@ def main(image_path):
         image = np.repeat(image, 3, axis=2)
     elif image.shape[2] == 4:
         image = image[:, :, 0:3]
-    matte = np.repeat(np.asarray(matte)[:, :, None], 3, axis=2) / 255
-    foreground = image * matte + np.full(image.shape, 255) * (1 - matte)
-    return Image.fromarray(foreground.astype(np.uint8))
+
+    b, g, r = cv2.split(image)
+
+    mask = np.asarray(matte)
+    a = np.ones(mask.shape, dtype='uint8') * 255
+    alpha_im = cv2.merge([b, g, r, a], 4)
+    bg = np.zeros(alpha_im.shape)
+    new_mask = np.stack([mask, mask, mask, mask], axis=2)
+    foreground = np.where(new_mask > threshold, alpha_im, bg).astype(np.uint8)
+
+    return Image.fromarray(foreground)
 
 
 title = "MODNet Background Remover"
@@ -99,9 +107,12 @@ image = Image.open(requests.get(url, stream=True).raw)
 image.save('twitter_profile_pic.jpeg')
 interface = gr.Interface(
     fn=main,
-    inputs=gr.inputs.Image(type='filepath'),
+    inputs=[
+        gr.inputs.Image(type='filepath'),
+        gr.inputs.Slider(minimum=0, maximum=250, default=100, step=5, label='Mask Cutoff Threshold'),
+    ],
     outputs='image',
-    examples=[['twitter_profile_pic.jpeg']],
+    examples=[['twitter_profile_pic.jpeg', 120]],
     title=title,
     description=description,
     article=article,
