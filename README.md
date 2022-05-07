@@ -1,5 +1,5 @@
 ---
-title: background-remover
+title: Background Remover
 emoji: 🖼️✂️
 colorFrom: blue
 colorTo: red
