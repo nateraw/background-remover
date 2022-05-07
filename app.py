@@ -97,6 +97,7 @@ example_img = hf_hub_download(
     'nateraw/background-remover-files',
     'twitter_profile_pic.jpeg',
     repo_type='dataset',
+    force_filename='twitter_profile_pic.jpeg',
 )
 
 interface = gr.Interface(
