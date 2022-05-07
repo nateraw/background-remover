@@ -1,4 +1,3 @@
-gradio
 onnxruntime==1.6.0
 onnx
 opencv-python
