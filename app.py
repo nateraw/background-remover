@@ -93,20 +93,17 @@ title = "MODNet Background Remover"
 description = "Gradio demo for MODNet, a model that can remove the background from a given image. To use it, simply upload your image, or click one of the examples to load them. Read more at the links below."
 article = "<div style='text-align: center;'> <a href='https://github.com/ZHKKKe/MODNet' target='_blank'>Github Repo</a> | <a href='https://arxiv.org/abs/2011.11961' target='_blank'>MODNet: Real-Time Trimap-Free Portrait Matting via Objective Decomposition</a> </div>"
 
+example_img = hf_hub_download(
+    'nateraw/background-remover-files',
+    'twitter_profile_pic.jpeg',
+    repo_type='dataset',
+)
+
 interface = gr.Interface(
     fn=main,
     inputs=gr.inputs.Image(type='filepath'),
     outputs='image',
-    examples=[
-        [
-            hf_hub_download(
-                'nateraw/background-remover-files',
-                'twitter_profile_pic.jpeg',
-                repo_type='dataset',
-                force_filename='twitter_profile_pic.jpeg',
-            )
-        ]
-    ],
+    examples=[[example_img]],
     title=title,
     description=description,
     article=article,
